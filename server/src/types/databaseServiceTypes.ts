@@ -12,12 +12,12 @@ export type CreateUser = {
 
 export type User = {
   id: number;
-  profile_image_url: string;
+  profile_image_url: string | null;
   name: string;
   email: string;
   encrypted_password: string;
   session_token: string;
-  created_at: string;
+  created_at: string | Date;
 };
 
 // user columns
