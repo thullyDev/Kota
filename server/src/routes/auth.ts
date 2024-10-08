@@ -45,14 +45,14 @@ auth.post("/signup", async (c) => {
   const sessionToken = generateUniqueToken(); 
   const encryptedSessionToken = encrypt(sessionToken); //TODO: implement this
   const encryptedPassword = encrypt(password); //TODO: implement this
-  const profileImageUrl = await createProfileAvatar(name); //TODO: implement this
+  const profileImageUrl = await createProfileAvatar(name);
   const dbResponse = await createUser({
     email,
     name,
     encryptedPassword,
     sessionToken,
     profileImageUrl,
-  }); //TODO: implement this
+  }); 
 
   if (dbResponse == false) {
     return crashResponse({

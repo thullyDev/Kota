@@ -1,4 +1,5 @@
 import CryptoJS from 'crypto-js';
+import slugify from 'slugify';
 
 // TODO implement encrypt, decrypt, and generateToken
 export function decrypt(encryptedText: string): string {
@@ -18,7 +19,8 @@ export function generateUniqueToken(length: number = 25): string {
 
 
 export async function createProfileAvatar(name: string) {
-  return "https://example.com/profile_image.jpg";
+  const slug = slugify(name)
+  return `https://robohash.org/${slug}`;
 }
 
 
