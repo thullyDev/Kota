@@ -1,16 +1,20 @@
 import { Hono } from "hono";
 import { createUser, getUser } from "../handlers/databaseService";
 import { crashResponse, successfulResponse } from "../handlers/response";
-import { createProfileAvatar, encrypt, generateUniqueToken } from "../utilities/misc";
+import {
+  createProfileAvatar,
+  encrypt,
+  generateUniqueToken,
+} from "../utilities/misc";
 import type { User } from "../types/databaseServiceTypes";
 import { isValidLogin, isValidSignup } from "../handlers/authHelpers";
 
 const auth = new Hono();
 
-auth.post("/login", async (c) => {
+auth.post("/login", async (c: Context) => {
   const data = await c.req.json();
   const { email, password } = data;
-  const user = await getUser({email}); 
+  const user = await getUser({ email });
   const [isValid, response] = isValidLogin({ user, password, c });
 
   if (isValid == false) {
@@ -19,7 +23,7 @@ auth.post("/login", async (c) => {
 
   const { name, profile_image_url } = user as User;
   const sessionToken = generateUniqueToken();
-  const encryptedSessionToken = encrypt(sessionToken); 
+  const encryptedSessionToken = encrypt(sessionToken);
 
   return successfulResponse({
     c,
@@ -32,19 +36,19 @@ auth.post("/login", async (c) => {
   });
 });
 
-auth.post("/signup", async (c) => {
+auth.post("/signup", async (c: Context) => {
   const data = await c.req.json();
   const { email, name, password, confirm } = data;
-  const user = await getUser({email}); 
+  const user = await getUser({ email });
   const [isValid, response] = isValidSignup({ user, password, confirm, c });
 
   if (isValid == false) {
     return response as any;
   }
 
-  const sessionToken = generateUniqueToken(); 
-  const encryptedSessionToken = encrypt(sessionToken); 
-  const encryptedPassword = encrypt(password); 
+  const sessionToken = generateUniqueToken();
+  const encryptedSessionToken = encrypt(sessionToken);
+  const encryptedPassword = encrypt(password);
   const profileImageUrl = await createProfileAvatar(name);
   const dbResponse = await createUser({
     email,
@@ -52,7 +56,7 @@ auth.post("/signup", async (c) => {
     encryptedPassword,
     sessionToken,
     profileImageUrl,
-  }); 
+  });
 
   if (dbResponse == false) {
     return crashResponse({

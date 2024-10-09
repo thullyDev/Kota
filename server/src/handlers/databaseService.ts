@@ -11,6 +11,8 @@ const pool = new Pool({
 const db = drizzle(pool, { schema, logger: true });
 
 export async function getUser({ email }: GetUser): Promise<null | User> {
+  if (!email) return null;
+
   const {
     id,
     name,
@@ -33,9 +35,9 @@ export async function getUser({ email }: GetUser): Promise<null | User> {
     .from(schema.UsersTable)
     .where(eq(schema.UsersTable.email, email));
 
-    if (users.length == 0) {
-      return null
-    }
+  if (users.length == 0) {
+    return null;
+  }
 
   return users[0];
 }

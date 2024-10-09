@@ -1,5 +1,5 @@
 export type GetUser = {
-  email: string;
+  email: string | undefined | null;
 };
 
 export type CreateUser = {

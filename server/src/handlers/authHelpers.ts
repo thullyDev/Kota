@@ -14,7 +14,7 @@ export function isValidLogin({
   }
 
   const { encrypted_password } = user;
-  const userPassword = decrypt(encrypted_password); 
+  const userPassword = decrypt(encrypted_password);
 
   if (userPassword != password) {
     const response = forbiddenResponse({ c, message: "password is invalid" });
@@ -30,7 +30,7 @@ export function isValidSignup({
   confirm,
   c,
 }: IsValidSignup): [boolean, Context["json"] | null] {
-  console.log({ user })
+  console.log({ user });
   if (user != null) {
     const response = forbiddenResponse({
       c,
