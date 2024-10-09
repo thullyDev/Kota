@@ -30,6 +30,7 @@ export function isValidSignup({
   confirm,
   c,
 }: IsValidSignup): [boolean, Context["json"] | null] {
+  console.log({ user })
   if (user != null) {
     const response = forbiddenResponse({
       c,

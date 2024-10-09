@@ -10,7 +10,7 @@ const auth = new Hono();
 auth.post("/login", async (c) => {
   const data = await c.req.json();
   const { email, password } = data;
-  const user = await getUser(email); 
+  const user = await getUser({email}); 
   const [isValid, response] = isValidLogin({ user, password, c });
 
   if (isValid == false) {
@@ -35,7 +35,7 @@ auth.post("/login", async (c) => {
 auth.post("/signup", async (c) => {
   const data = await c.req.json();
   const { email, name, password, confirm } = data;
-  const user = await getUser(email); 
+  const user = await getUser({email}); 
   const [isValid, response] = isValidSignup({ user, password, confirm, c });
 
   if (isValid == false) {
