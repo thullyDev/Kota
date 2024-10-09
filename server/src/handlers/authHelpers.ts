@@ -14,7 +14,7 @@ export function isValidLogin({
   }
 
   const { encrypted_password } = user;
-  const userPassword = decrypt(encrypted_password); //TODO: implement this
+  const userPassword = decrypt(encrypted_password); 
 
   if (userPassword != password) {
     const response = forbiddenResponse({ c, message: "password is invalid" });

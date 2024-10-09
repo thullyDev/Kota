@@ -19,7 +19,7 @@ auth.post("/login", async (c) => {
 
   const { name, profile_image_url } = user as User;
   const sessionToken = generateUniqueToken();
-  const encryptedSessionToken = encrypt(sessionToken); //TODO: implement this
+  const encryptedSessionToken = encrypt(sessionToken); 
 
   return successfulResponse({
     c,
@@ -43,8 +43,8 @@ auth.post("/signup", async (c) => {
   }
 
   const sessionToken = generateUniqueToken(); 
-  const encryptedSessionToken = encrypt(sessionToken); //TODO: implement this
-  const encryptedPassword = encrypt(password); //TODO: implement this
+  const encryptedSessionToken = encrypt(sessionToken); 
+  const encryptedPassword = encrypt(password); 
   const profileImageUrl = await createProfileAvatar(name);
   const dbResponse = await createUser({
     email,
