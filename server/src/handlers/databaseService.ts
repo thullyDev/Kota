@@ -1,4 +1,10 @@
-import type { CreateUser, GetUser, UpdateSessionToken, UpdateUser, User } from "../types/databaseServiceTypes";
+import type {
+  CreateUser,
+  GetUser,
+  UpdateSessionToken,
+  UpdateUser,
+  User,
+} from "../types/databaseServiceTypes";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../database/drizzle/schema";
@@ -48,7 +54,7 @@ export async function createUser({
   sessionToken,
   encryptedPassword,
   profileImageUrl,
-}: CreateUser): Promise<boolean> {
+}: CreateUser): Promise<number | null> {
   const user: typeof schema.UsersTable.$inferInsert = {
     name,
     email,
@@ -56,35 +62,46 @@ export async function createUser({
     encrypted_password: encryptedPassword,
     session_token: sessionToken,
   };
+  let id = null
 
   try {
-    await db.insert(schema.UsersTable).values(user);
+    const result = await db.insert(schema.UsersTable).values(user).returning({id: schema.UsersTable.id});
+    id = result.length ? result[0].id : null
   } catch (err: any) {
     if (err.code === "23505") {
-      return false;
+      return null;
     }
 
     throw err;
   }
 
-  return true;
+  return id
 }
 
-export async function updateSessionToken({ email, sessionToken }: UpdateSessionToken): Promise<boolean> {
-  const data = { session_token: sessionToken }
-  const equalTo = eq(schema.UsersTable.email, email)
+export async function updateSessionToken({
+  email,
+  sessionToken,
+}: UpdateSessionToken): Promise<boolean> {
+  const data = { session_token: sessionToken };
+  const equalTo = eq(schema.UsersTable.email, email);
   return updateUser({
     data,
     equalTo,
-  })
+  });
 }
 
+export async function updateUser({
+  data,
+  equalTo,
+}: UpdateUser): Promise<boolean> {
+  const { rowCount } = await db
+    .update(schema.UsersTable)
+    .set(data)
+    .where(equalTo);
 
-export async function updateUser({ data, equalTo}: UpdateUser): Promise<boolean> {
-  const { rowCount } = await db.update(schema.UsersTable).set(data).where(equalTo)
-  
-  if (!rowCount)  // 0 or null
-    return false
+  if (!rowCount)
+    // 0 or null
+    return false;
 
-  return true
+  return true;
 }

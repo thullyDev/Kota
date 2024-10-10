@@ -22,13 +22,12 @@ export type User = {
   created_at: string | Date;
 };
 
-
 export type UpdateSessionToken = {
-  email: string,
-  sessionToken: string,
-}
+  email: string;
+  sessionToken: string;
+};
 
 export type UpdateUser = {
-  data: Record<string, any>,
-  equalTo: SQL<unknown> 
-}
+  data: Record<string, any>;
+  equalTo: SQL<unknown>;
+};

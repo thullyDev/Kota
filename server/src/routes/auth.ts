@@ -21,13 +21,14 @@ auth.post("/login", async (c: Context) => {
     return response as Response;
   }
 
-  const { name, profile_image_url } = user as User;
+  const { id, name, profile_image_url } = user as User;
   const sessionToken = generateUniqueToken();
   const encryptedSessionToken = encrypt(sessionToken);
 
   return successfulResponse({
     c,
     data: {
+      id,
       name,
       email,
       profile_image_url,
@@ -50,7 +51,7 @@ auth.post("/signup", async (c: Context) => {
   const encryptedSessionToken = encrypt(sessionToken);
   const encryptedPassword = encrypt(password);
   const profileImageUrl = await createProfileAvatar(name);
-  const dbResponse = await createUser({
+  const userId = await createUser({
     email,
     name,
     encryptedPassword,
@@ -58,7 +59,7 @@ auth.post("/signup", async (c: Context) => {
     profileImageUrl,
   });
 
-  if (dbResponse == false) {
+  if  (userId == null) {
     return crashResponse({
       c,
       message: "something went with database trying to create user",
@@ -68,6 +69,7 @@ auth.post("/signup", async (c: Context) => {
   return successfulResponse({
     c,
     data: {
+      id: userId,
       name,
       email,
       profile_image_url: profileImageUrl,

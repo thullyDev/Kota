@@ -1,13 +1,17 @@
 import type { Context, Next } from "hono";
 import { getUser, updateSessionToken } from "./databaseService";
 import type { IsSessionTokenValid } from "../types/sessionTokenMilddlewareTypes";
-import { badRequestResponse, crashResponse, forbiddenResponse } from "./response";
+import {
+  badRequestResponse,
+  crashResponse,
+  forbiddenResponse,
+} from "./response";
 import { decrypt, encrypt, generateUniqueToken } from "../utilities/misc";
 import type { UpdateSessionToken } from "../types/databaseServiceTypes";
 
 export const sessionTokenValidator = async (c: Context, next: Next) => {
   const session_token = c.req.header("session_token");
-  const email = c.req.header("email") 
+  const email = c.req.header("email");
   const [isValidSessionToken, response] = await isSessionTokenValid({
     email,
     encryptedSessionToken: session_token,
@@ -20,17 +24,23 @@ export const sessionTokenValidator = async (c: Context, next: Next) => {
 
   const sessionToken = generateUniqueToken();
   const encryptedSessionToken = encrypt(sessionToken);
-  c.set("encryptedSessionToken", encryptedSessionToken)
+  c.set("encryptedSessionToken", encryptedSessionToken);
 
-  const dbResponse = await updateSessionToken({ sessionToken, email } as UpdateSessionToken) 
+  const dbResponse = await updateSessionToken({
+    sessionToken,
+    email,
+  } as UpdateSessionToken);
 
-  if (dbResponse == false) { 
-    // the database couldnt update, 
-    // most likely because it couldnt find the email
-    return crashResponse({ c, message: "something went wrong with trying to update the sessionToken with the database"})
+  if (dbResponse == false) {
+    // the database couldnt update
+    return crashResponse({
+      c,
+      message:
+        "something went wrong with trying to update the sessionToken with the database",
+    });
   }
 
-  await next()
+  await next();
 };
 
 async function isSessionTokenValid({

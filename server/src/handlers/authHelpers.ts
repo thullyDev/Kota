@@ -3,11 +3,7 @@ import { forbiddenResponse } from "./response";
 import { decrypt } from "../utilities/misc";
 import type { IsValidLogin, IsValidSignup } from "../types/authHelpersTypes";
 
-export function isValidLogin({
-  user,
-  password,
-  c,
-}: IsValidLogin) {
+export function isValidLogin({ user, password, c }: IsValidLogin) {
   if (user == null) {
     const response = forbiddenResponse({ c, message: "unregisted email" });
     return [false, response];
@@ -24,12 +20,7 @@ export function isValidLogin({
   return [true, null];
 }
 
-export function isValidSignup({
-  user,
-  password,
-  confirm,
-  c,
-}: IsValidSignup) {
+export function isValidSignup({ user, password, confirm, c }: IsValidSignup) {
   if (user != null) {
     const response = forbiddenResponse({
       c,
