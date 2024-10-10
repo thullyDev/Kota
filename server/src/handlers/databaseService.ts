@@ -1,4 +1,4 @@
-import type { CreateUser, GetUser, User } from "../types/databaseServiceTypes";
+import type { CreateUser, GetUser, UpdateSessionToken, User } from "../types/databaseServiceTypes";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../database/drizzle/schema";
@@ -70,12 +70,6 @@ export async function createUser({
   return true;
 }
 
-// export const UsersTable = pgTable("users", {
-//   id: serial("id").primaryKey(),
-//   profile_image_url: varchar({ length: 255 }),
-//   name: varchar({ length: 255 }).notNull(),
-//   email: varchar({ length: 255 }).notNull().unique(),
-//   encrypted_password: varchar({ length: 255 }).notNull(),
-//   session_token: varchar({ length: 255 }).notNull().unique(),
-//   created_at: timestamp("created_at").defaultNow().notNull(),
-// });
+export async function updateSessionToken({ email, sessionToken }: UpdateSessionToken): Promise<boolean> {
+  return false
+}

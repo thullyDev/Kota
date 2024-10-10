@@ -1,10 +1,15 @@
 import { Hono } from "hono";
 import { sessionTokenValidator } from "../handlers/sessionTokenMiddleware";
+import { successfulResponse } from "../handlers/response";
 
 const api = new Hono();
 api.use(sessionTokenValidator);
 
-api.get("/testing", (c) => c.text("POST / testing"));
+// api.get("/testing", (c) => {
+//   return successfulResponse({ c })
+// });
+
+
 api.post("/dishes", (c) => c.text("POST / dishes"));
 api.put("/change_user_name", (c) => c.text("PUT / change_user_name"));
 api.put("/change_dish_name", (c) => c.text("PUT / change_dish_name"));

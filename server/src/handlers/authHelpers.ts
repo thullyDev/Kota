@@ -7,7 +7,7 @@ export function isValidLogin({
   user,
   password,
   c,
-}: IsValidLogin): [boolean, Context["json"] | null] {
+}: IsValidLogin) {
   if (user == null) {
     const response = forbiddenResponse({ c, message: "unregisted email" });
     return [false, response];
@@ -29,8 +29,7 @@ export function isValidSignup({
   password,
   confirm,
   c,
-}: IsValidSignup): [boolean, Context["json"] | null] {
-  console.log({ user });
+}: IsValidSignup) {
   if (user != null) {
     const response = forbiddenResponse({
       c,

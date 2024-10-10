@@ -1,8 +1,9 @@
 import type { Context, Next } from "hono";
-import { getUser } from "./databaseService";
+import { getUser, updateSessionToken } from "./databaseService";
 import type { IsSessionTokenValid } from "../types/sessionTokenMilddlewareTypes";
-import { badRequestResponse, forbiddenResponse } from "./response";
+import { badRequestResponse, crashResponse, forbiddenResponse } from "./response";
 import { decrypt, encrypt, generateUniqueToken } from "../utilities/misc";
+import type { UpdateSessionToken } from "../types/databaseServiceTypes";
 
 export const sessionTokenValidator = async (c: Context, next: Next) => {
   const session_token = c.req.header("session_token");
@@ -14,15 +15,20 @@ export const sessionTokenValidator = async (c: Context, next: Next) => {
   });
 
   if (isValidSessionToken == false) {
-    return response;
+    return response as Response;
   }
 
   const sessionToken = generateUniqueToken();
   const encryptedSessionToken = encrypt(sessionToken);
+  c.set("encryptedSessionToken", encryptedSessionToken)
 
-  // TODO: finish the rest later
+  const dbResponse = await updateSessionToken({ sessionToken, email } as UpdateSessionToken) // TODO: implement this later
 
-  return c.text("Request logged and response from middleware!", 200);
+  if (dbResponse == false) {
+    return crashResponse({ c, message: "something went wrong with trying to update the sessionToken with the database"})
+  }
+
+  await next()
 };
 
 async function isSessionTokenValid({

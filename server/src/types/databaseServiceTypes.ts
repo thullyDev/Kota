@@ -20,6 +20,12 @@ export type User = {
   created_at: string | Date;
 };
 
+
+export type UpdateSessionToken = {
+  email: string,
+  sessionToken: string,
+}
+
 // user columns
 //   id,
 //   profile_image_url,

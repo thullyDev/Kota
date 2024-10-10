@@ -18,15 +18,32 @@ const jsonResponse = (
   c: Context,
   statusCode: StatusCode,
   data: Data,
-): Context["json"] => {
-  return c.json(data, statusCode) as unknown as Context["json"]; // enforcing this typing
+): Response => {
+  return c.json(data, statusCode) as unknown as Response; // enforcing this to be Response
 };
 
 const createContext = (
+  c: Context,
   data: Data,
   statusCode: number,
   message: string,
 ): Data => {
+  const url = c.req.url.toString()
+
+  if (url.includes("/api/") && statusCode == SUCCESSFUL) { 
+    // checks if the request is for the api router, 
+    // and if so we send back a new encrypted session_token to the request,
+    // only if the statusCode is 200
+     
+    const encryptedSessionToken = c.get("encryptedSessionToken")
+
+    if (!encryptedSessionToken) {
+      throw new Error("no encryptedSessionToken found")
+    }
+
+    data["session_token"] = encryptedSessionToken
+  }
+
   return {
     message,
     status_code: statusCode,
@@ -39,7 +56,7 @@ export const forbiddenResponse = ({
   data = {},
   message = FORBIDDEN_MSG,
 }: ResponseArgs) => {
-  const context = createContext(data, FORBIDDEN, message);
+  const context = createContext(c, data, FORBIDDEN, message);
   return jsonResponse(c, FORBIDDEN, context);
 };
 
@@ -48,7 +65,7 @@ export const successfulResponse = ({
   data = {},
   message = SUCCESSFUL_MSG,
 }: ResponseArgs) => {
-  const context = createContext(data, SUCCESSFUL, message);
+  const context = createContext(c, data, SUCCESSFUL, message);
   return jsonResponse(c, SUCCESSFUL, context);
 };
 
@@ -57,7 +74,7 @@ export const notFoundResponse = ({
   data = {},
   message = NOT_FOUND_MSG,
 }: ResponseArgs) => {
-  const context = createContext(data, NOT_FOUND, message);
+  const context = createContext(c, data, NOT_FOUND, message);
   return jsonResponse(c, NOT_FOUND, context);
 };
 
@@ -66,7 +83,7 @@ export const crashResponse = ({
   data = {},
   message = CRASH_MSG,
 }: ResponseArgs) => {
-  const context = createContext(data, CRASH, message);
+  const context = createContext(c, data, CRASH, message);
   return jsonResponse(c, CRASH, context);
 };
 
@@ -75,6 +92,6 @@ export const badRequestResponse = ({
   data = {},
   message = BAD_REQUEST_MSG,
 }: ResponseArgs) => {
-  const context = createContext(data, BAD_REQUEST, message);
+  const context = createContext(c, data, BAD_REQUEST, message);
   return jsonResponse(c, BAD_REQUEST, context);
 };

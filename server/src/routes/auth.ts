@@ -1,4 +1,4 @@
-import { Hono } from "hono";
+import { Hono, type Context } from "hono";
 import { createUser, getUser } from "../handlers/databaseService";
 import { crashResponse, successfulResponse } from "../handlers/response";
 import {
@@ -18,7 +18,7 @@ auth.post("/login", async (c: Context) => {
   const [isValid, response] = isValidLogin({ user, password, c });
 
   if (isValid == false) {
-    return response as any;
+    return response as Response;
   }
 
   const { name, profile_image_url } = user as User;
@@ -43,7 +43,7 @@ auth.post("/signup", async (c: Context) => {
   const [isValid, response] = isValidSignup({ user, password, confirm, c });
 
   if (isValid == false) {
-    return response as any;
+    return response as Response;
   }
 
   const sessionToken = generateUniqueToken();
