@@ -1,3 +1,5 @@
+import type { eq, SQL } from "drizzle-orm";
+
 export type GetUser = {
   email: string | undefined | null;
 };
@@ -26,11 +28,7 @@ export type UpdateSessionToken = {
   sessionToken: string,
 }
 
-// user columns
-//   id,
-//   profile_image_url,
-//   name,
-//   email,
-//   encrypted_password,
-//   session_token
-//   created_at,
+export type UpdateUser = {
+  data: Record<string, any>,
+  equalTo: SQL<unknown> 
+}

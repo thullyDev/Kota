@@ -1,4 +1,4 @@
-import type { CreateUser, GetUser, UpdateSessionToken, User } from "../types/databaseServiceTypes";
+import type { CreateUser, GetUser, UpdateSessionToken, UpdateUser, User } from "../types/databaseServiceTypes";
 import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../database/drizzle/schema";
@@ -71,5 +71,20 @@ export async function createUser({
 }
 
 export async function updateSessionToken({ email, sessionToken }: UpdateSessionToken): Promise<boolean> {
-  return false
+  const data = { session_token: sessionToken }
+  const equalTo = eq(schema.UsersTable.email, email)
+  return updateUser({
+    data,
+    equalTo,
+  })
+}
+
+
+export async function updateUser({ data, equalTo}: UpdateUser): Promise<boolean> {
+  const { rowCount } = await db.update(schema.UsersTable).set(data).where(equalTo)
+  
+  if (!rowCount)  // 0 or null
+    return false
+
+  return true
 }

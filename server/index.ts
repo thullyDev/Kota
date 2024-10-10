@@ -7,11 +7,9 @@ import { cors } from "hono/cors";
 const app = new Hono();
 
 app.use(logger());
-app.use(cors());
+app.use(cors()); // TODO: implement the proper cors later
 
-app.get("/", (c) => {
-  return c.text("server by github@thullyDev");
-});
+app.get("/", (c) => c.text("server by github@thullyDev"));
 
 app.route("/api", apiRouter);
 

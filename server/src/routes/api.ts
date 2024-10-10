@@ -5,9 +5,9 @@ import { successfulResponse } from "../handlers/response";
 const api = new Hono();
 api.use(sessionTokenValidator);
 
-// api.get("/testing", (c) => {
-//   return successfulResponse({ c })
-// });
+api.get("/testing", (c) => {
+  return successfulResponse({ c })
+});
 
 
 api.post("/dishes", (c) => c.text("POST / dishes"));
