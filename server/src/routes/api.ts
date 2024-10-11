@@ -33,7 +33,7 @@ import {
   updateDishName,
   updateUserName,
 } from "../handlers/databaseService";
-import type { UpdateUserName } from "../types/databaseServiceTypes";
+import type { UpdateDishName, UpdateUserName } from "../types/databaseServiceTypes";
 
 const api = new Hono();
 api.use(sessionTokenValidator);
@@ -91,7 +91,7 @@ api.put("/change_user_name", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await updateUserName({ user_id, name } as UpdateUserName); // Todo: implement this later
+  const response = await updateUserName({ user_id, name } as UpdateUserName);
 
   if (response == false) {
     return crashResponse({ c, message: "db failed to change user name, probably because user does not exist" });
@@ -105,14 +105,14 @@ api.put("/change_user_name", async (c) => {
 
 api.put("/change_dish_title", async (c) => {
   const data: ChangeDishTitleBody = await c.req.json();
-  const { user_id, title } = data;
+  const { user_id, dish_id, title } = data;
   const [isValid, message] = isChangeDishTitleRequestBodyValid(data);
 
   if (isValid == false) {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await updateDishName({ user_id, title }); // Todo: implement this later
+  const response = await updateDishName({ user_id, dish_id, title } as UpdateDishName); // Todo: implement this later
 
   if (!response) {
     return crashResponse({ c, message: "unable to update dish" });

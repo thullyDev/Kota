@@ -39,6 +39,7 @@ export type UpdateUserName = {
 
 export type UpdateDishName = {
   title: string;
+  dish_id: number;
   user_id: number;
 };
 

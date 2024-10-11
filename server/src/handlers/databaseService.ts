@@ -14,7 +14,7 @@ import { drizzle } from "drizzle-orm/node-postgres";
 import { Pool } from "pg";
 import * as schema from "../database/drizzle/schema";
 import "dotenv/config";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import type { Dish, DishData } from "../types/apiTypes";
 
 const pool = new Pool({
@@ -183,8 +183,22 @@ export async function updateUserName({ user_id, name }: UpdateUserName) {
   });
 }
 
-export function updateDishName({ user_id, title }: UpdateDishName) {
-  throw new Error("Function not implemented.");
+export async function updateDishName({ user_id, dish_id, title }: UpdateDishName) {
+  const { rowCount } = await db
+  .update(DishesTable)
+  .set({ title })
+  .where(
+    and(
+      eq(DishesTable.user_id, user_id),
+      eq(DishesTable.id, dish_id),
+    )
+  )
+
+  if (!rowCount)
+    // 0 or null
+    return false;
+
+  return true;
 }
 
 export function deleteDish({ user_id, dish_id }: DeleteDish) {
