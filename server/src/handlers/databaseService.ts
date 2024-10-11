@@ -15,12 +15,13 @@ import { Pool } from "pg";
 import * as schema from "../database/drizzle/schema";
 import "dotenv/config";
 import { eq } from "drizzle-orm";
-import type { DishData } from "../types/apiTypes";
+import type { Dish, DishData } from "../types/apiTypes";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL as string,
 });
 const db = drizzle(pool, { schema, logger: true });
+const { UsersTable, DishesTable, IngredientsTable } = schema
 
 export async function getUser({ email }: GetUser): Promise<null | User> {
   if (!email) return null;
@@ -33,7 +34,7 @@ export async function getUser({ email }: GetUser): Promise<null | User> {
     encrypted_password,
     session_token,
     created_at,
-  } = schema.UsersTable;
+  } = UsersTable;
   const users = await db
     .select({
       id,
@@ -44,8 +45,8 @@ export async function getUser({ email }: GetUser): Promise<null | User> {
       session_token,
       created_at,
     })
-    .from(schema.UsersTable)
-    .where(eq(schema.UsersTable.email, email));
+    .from(UsersTable)
+    .where(eq(UsersTable.email, email));
 
   if (users.length == 0) {
     return null;
@@ -61,7 +62,7 @@ export async function createUser({
   encryptedPassword,
   profileImageUrl,
 }: CreateUser): Promise<number | null> {
-  const user: typeof schema.UsersTable.$inferInsert = {
+  const user: typeof UsersTable.$inferInsert = {
     name,
     email,
     profile_image_url: profileImageUrl,
@@ -72,9 +73,9 @@ export async function createUser({
 
   try {
     const result = await db
-      .insert(schema.UsersTable)
+      .insert(UsersTable)
       .values(user)
-      .returning({ id: schema.UsersTable.id });
+      .returning({ id: UsersTable.id });
     id = result.length ? result[0].id : null;
   } catch (err: any) {
     if (err.code === "23505") {
@@ -92,7 +93,7 @@ export async function updateSessionToken({
   sessionToken,
 }: UpdateSessionToken): Promise<boolean> {
   const data = { session_token: sessionToken };
-  const equalTo = eq(schema.UsersTable.email, email);
+  const equalTo = eq(UsersTable.email, email);
   return updateUser({
     data,
     equalTo,
@@ -104,7 +105,7 @@ export async function updateUser({
   equalTo,
 }: UpdateUser): Promise<boolean> {
   const { rowCount } = await db
-    .update(schema.UsersTable)
+    .update(UsersTable)
     .set(data)
     .where(equalTo);
 
@@ -116,7 +117,7 @@ export async function updateUser({
 }
 
 export async function addDish({ title, user_id, price, ingredients }: DishData): Promise<null | number> {
-  const dish: typeof schema.DishesTable.$inferInsert = {
+  const dish: typeof DishesTable.$inferInsert = {
     title,
     user_id,
     price,
@@ -125,9 +126,9 @@ export async function addDish({ title, user_id, price, ingredients }: DishData):
 
   try {
     let result = await db
-      .insert(schema.DishesTable)
+      .insert(DishesTable)
       .values(dish)
-      .returning({ id: schema.DishesTable.id });
+      .returning({ id: DishesTable.id });
     const id = result.length ? result[0].id : null;
 
     if (id == null) {
@@ -144,9 +145,9 @@ export async function addDish({ title, user_id, price, ingredients }: DishData):
 
 
     result = await db
-      .insert(schema.IngredientsTable)
+      .insert(IngredientsTable)
       .values(ingredients)
-      .returning({ id: schema.IngredientsTable.id });
+      .returning({ id: IngredientsTable.id });
 
     if (!result.length) {
       return null
@@ -159,8 +160,18 @@ export async function addDish({ title, user_id, price, ingredients }: DishData):
   }
 }
 
-export function getUserDishes(user_id: number) {
-  throw new Error("Function not implemented.");
+export async function getUserDishes(user_id: number): Promise<Dish[]> {
+    const dishes = await db
+    .select({
+      id: DishesTable.id,
+      user_id: DishesTable.user_id,
+      price: DishesTable.price,
+      title: DishesTable.title,
+    })
+    .from(DishesTable)
+    .where(eq(DishesTable.user_id, user_id));
+
+    return dishes 
 }
 
 export function updateUserName({ user_id, name }: UpdateUserName) {

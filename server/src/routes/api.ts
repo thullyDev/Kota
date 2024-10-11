@@ -71,7 +71,7 @@ api.post("/dishes", async (c) => {
     return badRequestResponse({ c, message: "no user_id" });
   }
 
-  const dishes = await getUserDishes(user_id); // Todo: implement this later
+  const dishes = await getUserDishes(user_id); 
 
   return successfulResponse({
     c,

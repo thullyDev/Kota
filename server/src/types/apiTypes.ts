@@ -16,6 +16,13 @@ export type DishData = {
   ingredients: Ingredients[];
 };
 
+export type Dish = {
+  user_id: number;
+  title: string;
+  price: number;
+  id: number
+}
+
 export type Ingredients = {
   name: string;
   user_id: number;
