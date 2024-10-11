@@ -1,5 +1,5 @@
 import { Hono, type Context } from "hono";
-import { createUser, getUser } from "../handlers/databaseService";
+import { createUser, getUser, updateSessionToken } from "../handlers/databaseService";
 import {
   crashResponse,
   forbiddenResponse,
@@ -10,7 +10,7 @@ import {
   encrypt,
   generateUniqueToken,
 } from "../utilities/misc";
-import type { User } from "../types/databaseServiceTypes";
+import type { UpdateSessionToken, User } from "../types/databaseServiceTypes";
 import { isValidLogin, isValidSignup } from "../handlers/authHelpers";
 import type { CxtAndMsg } from "../types/apiTypes";
 
@@ -29,6 +29,20 @@ auth.post("/login", async (c: Context) => {
   const { id, name, profile_image_url } = user as User;
   const sessionToken = generateUniqueToken();
   const encryptedSessionToken = encrypt(sessionToken);
+
+    const dbResponse = await updateSessionToken({
+      sessionToken,
+      email,
+    } as UpdateSessionToken);
+
+    if (dbResponse == false) {
+      // the database couldnt update
+      return crashResponse({
+        c,
+        message:
+          "something went wrong with trying to update the sessionToken with the database",
+      });
+    }
 
   return successfulResponse({
     c,

@@ -1,4 +1,4 @@
-import { Hono, type Context } from "hono";
+import { Hono } from "hono";
 import { sessionTokenValidator } from "../handlers/sessionTokenMiddleware";
 import {
   badRequestResponse,
@@ -198,10 +198,14 @@ api.delete("/remove_ingredient", async (c) => {
     user_id,
     dish_id,
     ing_id,
-  } as RemoveIngredient); 
+  } as RemoveIngredient);
 
   if (!response) {
-    return notFoundResponse({ c, message: "unable to remove ingredient, could be user_id, dish_id or ing_id are not found" });
+    return notFoundResponse({
+      c,
+      message:
+        "unable to remove ingredient, could be user_id, dish_id or ing_id are not found",
+    });
   }
 
   return successfulResponse({
