@@ -33,7 +33,7 @@ import {
   updateDishName,
   updateUserName,
 } from "../handlers/databaseService";
-import type { UpdateDishName, UpdateUserName } from "../types/databaseServiceTypes";
+import type { DeleteDish, UpdateDishName, UpdateUserName } from "../types/databaseServiceTypes";
 
 const api = new Hono();
 api.use(sessionTokenValidator);
@@ -112,7 +112,7 @@ api.put("/change_dish_title", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await updateDishName({ user_id, dish_id, title } as UpdateDishName); // Todo: implement this later
+  const response = await updateDishName({ user_id, dish_id, title } as UpdateDishName); 
 
   if (!response) {
     return crashResponse({ c, message: "unable to update dish" });
@@ -133,7 +133,7 @@ api.delete("/delete_dish", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await deleteDish({ user_id, dish_id }); // Todo: implement this later
+  const response = await deleteDish({ user_id, dish_id } as DeleteDish); 
 
   if (!response) {
     return crashResponse({ c, message: "unable to delete dish" });

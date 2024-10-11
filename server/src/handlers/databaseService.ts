@@ -201,8 +201,21 @@ export async function updateDishName({ user_id, dish_id, title }: UpdateDishName
   return true;
 }
 
-export function deleteDish({ user_id, dish_id }: DeleteDish) {
-  throw new Error("Function not implemented.");
+export async function deleteDish({ user_id, dish_id }: DeleteDish) {
+  const { rowCount } = await db
+  .delete(DishesTable)
+  .where(
+    and(
+      eq(DishesTable.user_id, user_id),
+      eq(DishesTable.id, dish_id),
+    )
+  )
+
+  if (!rowCount)
+    // 0 or null
+    return false;
+
+  return true;
 }
 
 export function addIngredient({ user_id, dish_id, name }: AddIngredient) {
