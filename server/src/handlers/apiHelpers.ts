@@ -6,24 +6,30 @@ import type {
   AddIngredientBody,
   ChangeDishTitleBody,
   DeleteDishBody,
+  RemoveIngredientBody,
 } from "../types/apiTypes";
 
 export function isAddDishRequestValid({
   user_id,
-  dish,
+  title,
+  price,
   ingredients,
 }: IsAddDishRequestValid) {
   if (!user_id) {
     return [false, "no user_id"];
   }
 
-  if (!dish) {
-    return [false, "no dish"];
+  if (!title) {
+    return [false, "no title"];
+  }
+
+  if (!price) {
+    return [false, "no price"];
   }
 
   if (!ingredients) {
     // undefined or is empty
-    return [false, "no ingredients data"];
+    return [false, "no ingredients data, should have at least one ingredient item"];
   }
 
   return [true, null];

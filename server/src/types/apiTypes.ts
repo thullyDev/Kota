@@ -2,7 +2,8 @@ import type { Context } from "hono";
 
 export type AddDishBody = {
   user_id?: number;
-  dish?: Dish;
+  price?: number;
+  title: string;
   ingredients?: Ingredients[];
 };
 
@@ -10,17 +11,15 @@ export type DishesBody = { user_id: number };
 
 export type DishData = {
   user_id: number;
-  dish: Dish;
-  ingredients: Ingredients[];
-};
-
-export type Dish = {
   title: string;
   price: number;
+  ingredients: Ingredients[];
 };
 
 export type Ingredients = {
   name: string;
+  user_id: number;
+  dish_id: number;
   quantity: number;
 };
 
@@ -35,24 +34,24 @@ export type ChangeUserNameBody = {
 };
 
 export type ChangeDishTitleBody = {
-  user_id: number;
-  dish_id: number;
-  title: string;
+  user_id?: number;
+  dish_id?: number;
+  title?: string;
 };
 
 export type DeleteDishBody = {
-  user_id: number;
-  dish_id: number;
+  user_id?: number;
+  dish_id?: number;
 };
 
 export type AddIngredientBody = {
-  user_id: number;
-  dish_id: number;
-  name: string;
+  user_id?: number;
+  dish_id?: number;
+  name?: string;
 };
 
 export type RemoveIngredientBody = {
-  user_id: number;
-  dish_id: number;
-  ing_id: number;
+  user_id?: number;
+  dish_id?: number;
+  ing_id?: number;
 };

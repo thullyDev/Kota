@@ -18,27 +18,27 @@ export const sessionTokenValidator = async (c: Context, next: Next) => {
     c,
   });
 
-  if (isValidSessionToken == false) {
-    return response as Response;
-  }
+  // if (isValidSessionToken == false) {
+  //   return response as Response;
+  // }
 
-  const sessionToken = generateUniqueToken();
-  const encryptedSessionToken = encrypt(sessionToken);
-  c.set("encryptedSessionToken", encryptedSessionToken);
+  // const sessionToken = generateUniqueToken();
+  // const encryptedSessionToken = encrypt(sessionToken);
+  // c.set("encryptedSessionToken", encryptedSessionToken);
 
-  const dbResponse = await updateSessionToken({
-    sessionToken,
-    email,
-  } as UpdateSessionToken);
+  // const dbResponse = await updateSessionToken({
+  //   sessionToken,
+  //   email,
+  // } as UpdateSessionToken);
 
-  if (dbResponse == false) {
-    // the database couldnt update
-    return crashResponse({
-      c,
-      message:
-        "something went wrong with trying to update the sessionToken with the database",
-    });
-  }
+  // if (dbResponse == false) {
+  //   // the database couldnt update
+  //   return crashResponse({
+  //     c,
+  //     message:
+  //       "something went wrong with trying to update the sessionToken with the database",
+  //   });
+  // }
 
   await next();
 };

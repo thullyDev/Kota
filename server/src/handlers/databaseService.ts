@@ -115,9 +115,48 @@ export async function updateUser({
   return true;
 }
 
-export async function addDish(dishData: DishData): Promise<null | number> {
-  // return the dish_id or null if failed
-  throw new Error("Function not implemented.");
+export async function addDish({ title, user_id, price, ingredients }: DishData): Promise<null | number> {
+  const dish: typeof schema.DishesTable.$inferInsert = {
+    title,
+    user_id,
+    price,
+  };
+
+
+  try {
+    let result = await db
+      .insert(schema.DishesTable)
+      .values(dish)
+      .returning({ id: schema.DishesTable.id });
+    const id = result.length ? result[0].id : null;
+
+    if (id == null) {
+      return null
+    }
+
+
+    ingredients = ingredients.map((value) => {
+      value["user_id"] = user_id
+      value["dish_id"] = id
+
+      return value
+    })
+
+
+    result = await db
+      .insert(schema.IngredientsTable)
+      .values(ingredients)
+      .returning({ id: schema.IngredientsTable.id });
+
+    if (!result.length) {
+      return null
+    }
+
+    return id
+  } catch (err: any) {
+    console.log(err)
+    return null
+  }
 }
 
 export function getUserDishes(user_id: number) {

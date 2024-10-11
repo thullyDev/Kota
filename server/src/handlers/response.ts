@@ -38,7 +38,9 @@ const createContext = (
     const encryptedSessionToken = c.get("encryptedSessionToken");
 
     if (!encryptedSessionToken) {
-      throw new Error("no encryptedSessionToken found");
+      // TODO: uncomment this later
+
+      // throw new Error("no encryptedSessionToken found");
     }
 
     data["session_token"] = encryptedSessionToken;
