@@ -1,8 +1,13 @@
 import type {
+  AddIngredient,
   CreateUser,
+  DeleteDish,
   GetUser,
+  RemoveIngredient,
+  UpdateDishName,
   UpdateSessionToken,
   UpdateUser,
+  UpdateUserName,
   User,
 } from "../types/databaseServiceTypes";
 import { drizzle } from "drizzle-orm/node-postgres";
@@ -119,6 +124,26 @@ export function getUserDishes(user_id: number) {
   throw new Error("Function not implemented.");
 }
 
-export function updateUserName({ user_name, name }: UpdateUserName) {
+export function updateUserName({ user_id, name }: UpdateUserName) {
+  throw new Error("Function not implemented.");
+}
+
+export function updateDishName({ user_id, title }: UpdateDishName) {
+  throw new Error("Function not implemented.");
+}
+
+export function deleteDish({ user_id, dish_id }: DeleteDish) {
+  throw new Error("Function not implemented.");
+}
+
+export function addIngredient({ user_id, dish_id, name }: AddIngredient) {
+  throw new Error("Function not implemented.");
+}
+
+export function removeIngredient({
+  user_id,
+  dish_id,
+  ing_id,
+}: RemoveIngredient) {
   throw new Error("Function not implemented.");
 }

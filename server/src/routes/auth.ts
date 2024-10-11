@@ -51,7 +51,7 @@ auth.post("/signup", async (c: Context) => {
   if (isValid == false) {
     return forbiddenResponse({ c, message } as CxtAndMsg);
   }
-  
+
   const sessionToken = generateUniqueToken();
   const encryptedSessionToken = encrypt(sessionToken);
   const encryptedPassword = encrypt(password);

@@ -1,5 +1,12 @@
-import type { IsAddDishRequestValid, IsChangeUserNameRequestBodyValid } from "../types/apiHelpersTypes";
-import type { ChangeDishTitleBody } from "../types/apiTypes";
+import type {
+  IsAddDishRequestValid,
+  IsChangeUserNameRequestBodyValid,
+} from "../types/apiHelpersTypes";
+import type {
+  AddIngredientBody,
+  ChangeDishTitleBody,
+  DeleteDishBody,
+} from "../types/apiTypes";
 
 export function isAddDishRequestValid({
   user_id,
@@ -33,11 +40,15 @@ export function isChangeUserNameRequestBodyValid({
   if (!name) {
     return [false, "no name"];
   }
-  
+
   return [true, null];
 }
 
-export function isChangeDishTitleRequestBodyValid({ user_id, dish_id, title }: ChangeDishTitleBody) {
+export function isChangeDishTitleRequestBodyValid({
+  user_id,
+  dish_id,
+  title,
+}: ChangeDishTitleBody) {
   if (!user_id) {
     return [false, "no user_id"];
   }
@@ -50,5 +61,57 @@ export function isChangeDishTitleRequestBodyValid({ user_id, dish_id, title }: C
     return [false, "no title"];
   }
 
-  return [true, null]
+  return [true, null];
+}
+
+export function isDeleteRequestBodyValid({ user_id, dish_id }: DeleteDishBody) {
+  if (!user_id) {
+    return [false, "no user_id"];
+  }
+
+  if (!dish_id) {
+    return [false, "no dish_id"];
+  }
+
+  return [true, null];
+}
+
+export function isAddIngredientBodyValid({
+  user_id,
+  dish_id,
+  name,
+}: AddIngredientBody) {
+  if (!user_id) {
+    return [false, "no user_id"];
+  }
+
+  if (!dish_id) {
+    return [false, "no dish_id"];
+  }
+
+  if (!name) {
+    return [false, "no name"];
+  }
+
+  return [true, null];
+}
+
+export function isRemoveIngredientBodyValid({
+  user_id,
+  dish_id,
+  ing_id,
+}: RemoveIngredientBody) {
+  if (!user_id) {
+    return [false, "no user_id"];
+  }
+
+  if (!dish_id) {
+    return [false, "no dish_id"];
+  }
+
+  if (!ing_id) {
+    return [false, "no ingredient id"];
+  }
+
+  return [true, null];
 }

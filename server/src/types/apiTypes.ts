@@ -29,14 +29,30 @@ export type CxtAndMsg = {
   message: string;
 };
 
-
 export type ChangeUserNameBody = {
-  name?: string,
-  user_id?: number,
-}
+  name?: string;
+  user_id?: number;
+};
 
-export type ChangeDishTitleBody = { 
-  user_id: number, 
-  dish_id: number, 
-  title: string, 
-}
+export type ChangeDishTitleBody = {
+  user_id: number;
+  dish_id: number;
+  title: string;
+};
+
+export type DeleteDishBody = {
+  user_id: number;
+  dish_id: number;
+};
+
+export type AddIngredientBody = {
+  user_id: number;
+  dish_id: number;
+  name: string;
+};
+
+export type RemoveIngredientBody = {
+  user_id: number;
+  dish_id: number;
+  ing_id: number;
+};

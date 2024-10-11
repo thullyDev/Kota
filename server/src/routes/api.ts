@@ -7,13 +7,32 @@ import {
 } from "../handlers/response";
 import type {
   AddDishBody,
+  AddIngredientBody,
+  ChangeDishTitleBody,
   ChangeUserNameBody,
   CxtAndMsg,
+  DeleteDishBody,
   DishData,
   DishesBody,
+  RemoveIngredientBody,
 } from "../types/apiTypes";
-import { isAddDishRequestValid, isChangeDishTitleRequestBodyValid, isChangeUserNameRequestBodyValid } from "../handlers/apiHelpers";
-import { addDish, getUserDishes, updateUserName } from "../handlers/databaseService";
+import {
+  isAddDishRequestValid,
+  isAddIngredientBodyValid,
+  isChangeDishTitleRequestBodyValid,
+  isChangeUserNameRequestBodyValid,
+  isDeleteRequestBodyValid,
+  isRemoveIngredientBodyValid,
+} from "../handlers/apiHelpers";
+import {
+  addDish,
+  addIngredient,
+  deleteDish,
+  getUserDishes,
+  removeIngredient,
+  updateDishName,
+  updateUserName,
+} from "../handlers/databaseService";
 import type { UpdateUserName } from "../types/databaseServiceTypes";
 
 const api = new Hono();
@@ -82,7 +101,7 @@ api.put("/change_user_name", async (c) => {
   const response = updateUserName({ user_id, name } as UpdateUserName); // Todo: implement this later
 
   if (response == false) {
-  	return crashResponse({ c, message: "db failed to change user name"})
+    return crashResponse({ c, message: "db failed to change user name" });
   }
 
   return successfulResponse({
@@ -100,14 +119,15 @@ api.put("/change_dish_title", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const dishes = updateDishName({ user_id, title }); // Todo: implement this later
+  const response = updateDishName({ user_id, title }); // Todo: implement this later
+
+  if (!response) {
+    return crashResponse({ c, message: "unable to update dish" });
+  }
 
   return successfulResponse({
     c,
     message: "successfully got the dishes",
-    data: {
-      dishes,
-    },
   });
 });
 
@@ -120,17 +140,17 @@ api.delete("/delete_dish", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const dishes = updateDishName({ user_id, dish_id }); // Todo: implement this later
+  const response = deleteDish({ user_id, dish_id }); // Todo: implement this later
+
+  if (!response) {
+    return crashResponse({ c, message: "unable to delete dish" });
+  }
 
   return successfulResponse({
     c,
     message: "successfully deleted the dishes",
-    data: {
-      dishes,
-    },
   });
 });
-
 
 api.put("/add_ingredient", async (c) => {
   const data: AddIngredientBody = await c.req.json();
@@ -141,35 +161,35 @@ api.put("/add_ingredient", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const dishes = addIngredeint({ user_id, dish_id, name }); // Todo: implement this later
+  const response = addIngredient({ user_id, dish_id, name }); // Todo: implement this later
+  if (!response) {
+    return crashResponse({ c, message: "unable to add ingredient" });
+  }
 
   return successfulResponse({
     c,
     message: "successfully added ingredient",
-    data: {
-      dishes,
-    },
   });
 });
 
-
 api.delete("/remove_ingredient", async (c) => {
   const data: RemoveIngredientBody = await c.req.json();
-  const { user_id, dish_id,  ing_id } = data;
+  const { user_id, dish_id, ing_id } = data;
   const [isValid, message] = isRemoveIngredientBodyValid(data);
 
   if (isValid == false) {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const dishes = removeIngredient({ user_id, dish_id, ing_id }); // Todo: implement this later
+  const response = removeIngredient({ user_id, dish_id, ing_id }); // Todo: implement this later
+
+  if (!response) {
+    return crashResponse({ c, message: "unable to remove ingredient" });
+  }
 
   return successfulResponse({
     c,
     message: "successfully removed the ingredient",
-    data: {
-      dishes,
-    },
   });
 });
 
