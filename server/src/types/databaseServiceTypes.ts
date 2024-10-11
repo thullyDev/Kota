@@ -43,7 +43,12 @@ export type UpdateDishName = {
   user_id: number;
 };
 
-export type AddIngredient = { user_id: number; dish_id: number; name: string };
+export type AddIngredient = {
+  user_id: number;
+  dish_id: number;
+  name: string;
+  quantity: number;
+};
 
 export type DeleteDish = { user_id: number; dish_id: number };
 

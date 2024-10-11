@@ -3,6 +3,7 @@ import { sessionTokenValidator } from "../handlers/sessionTokenMiddleware";
 import {
   badRequestResponse,
   crashResponse,
+  notFoundResponse,
   successfulResponse,
 } from "../handlers/response";
 import type {
@@ -33,11 +34,16 @@ import {
   updateDishName,
   updateUserName,
 } from "../handlers/databaseService";
-import type { DeleteDish, UpdateDishName, UpdateUserName } from "../types/databaseServiceTypes";
+import type {
+  AddIngredient,
+  DeleteDish,
+  RemoveIngredient,
+  UpdateDishName,
+  UpdateUserName,
+} from "../types/databaseServiceTypes";
 
 const api = new Hono();
 api.use(sessionTokenValidator);
-
 
 api.post("/add_dish", async (c) => {
   const data: AddDishBody = await c.req.json();
@@ -71,7 +77,7 @@ api.post("/dishes", async (c) => {
     return badRequestResponse({ c, message: "no user_id" });
   }
 
-  const dishes = await getUserDishes(user_id); 
+  const dishes = await getUserDishes(user_id);
 
   return successfulResponse({
     c,
@@ -94,7 +100,11 @@ api.put("/change_user_name", async (c) => {
   const response = await updateUserName({ user_id, name } as UpdateUserName);
 
   if (response == false) {
-    return crashResponse({ c, message: "db failed to change user name, probably because user does not exist" });
+    return crashResponse({
+      c,
+      message:
+        "db failed to change user name, probably because user does not exist",
+    });
   }
 
   return successfulResponse({
@@ -112,15 +122,19 @@ api.put("/change_dish_title", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await updateDishName({ user_id, dish_id, title } as UpdateDishName); 
+  const response = await updateDishName({
+    user_id,
+    dish_id,
+    title,
+  } as UpdateDishName);
 
   if (!response) {
-    return crashResponse({ c, message: "unable to update dish" });
+    return crashResponse({ c, message: "unable to update dish title" });
   }
 
   return successfulResponse({
     c,
-    message: "successfully got the dishes",
+    message: "successfully changed the dish title",
   });
 });
 
@@ -133,7 +147,7 @@ api.delete("/delete_dish", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await deleteDish({ user_id, dish_id } as DeleteDish); 
+  const response = await deleteDish({ user_id, dish_id } as DeleteDish);
 
   if (!response) {
     return crashResponse({ c, message: "unable to delete dish" });
@@ -147,16 +161,22 @@ api.delete("/delete_dish", async (c) => {
 
 api.put("/add_ingredient", async (c) => {
   const data: AddIngredientBody = await c.req.json();
-  const { user_id, dish_id, name } = data;
+  const { user_id, dish_id, name, quantity } = data;
   const [isValid, message] = isAddIngredientBodyValid(data);
 
   if (isValid == false) {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await addIngredient({ user_id, dish_id, name }); // Todo: implement this later
+  const response = await addIngredient({
+    user_id,
+    dish_id,
+    name,
+    quantity,
+  } as AddIngredient);
+
   if (!response) {
-    return crashResponse({ c, message: "unable to add ingredient" });
+    return crashResponse({ c, message: "unable to add ingredient, " });
   }
 
   return successfulResponse({
@@ -174,10 +194,14 @@ api.delete("/remove_ingredient", async (c) => {
     return badRequestResponse({ c, message } as CxtAndMsg);
   }
 
-  const response = await removeIngredient({ user_id, dish_id, ing_id }); // Todo: implement this later
+  const response = await removeIngredient({
+    user_id,
+    dish_id,
+    ing_id,
+  } as RemoveIngredient); 
 
   if (!response) {
-    return crashResponse({ c, message: "unable to remove ingredient" });
+    return notFoundResponse({ c, message: "unable to remove ingredient, could be user_id, dish_id or ing_id are not found" });
   }
 
   return successfulResponse({

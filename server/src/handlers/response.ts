@@ -39,7 +39,6 @@ const createContext = (
 
     if (!encryptedSessionToken) {
       // TODO: uncomment this later
-
       // throw new Error("no encryptedSessionToken found");
     }
 

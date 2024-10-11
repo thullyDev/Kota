@@ -21,7 +21,7 @@ const pool = new Pool({
   connectionString: process.env.DATABASE_URL as string,
 });
 const db = drizzle(pool, { schema, logger: true });
-const { UsersTable, DishesTable, IngredientsTable } = schema
+const { UsersTable, DishesTable, IngredientsTable } = schema;
 
 export async function getUser({ email }: GetUser): Promise<null | User> {
   if (!email) return null;
@@ -78,11 +78,8 @@ export async function createUser({
       .returning({ id: UsersTable.id });
     id = result.length ? result[0].id : null;
   } catch (err: any) {
-    if (err.code === "23505") {
-      return null;
-    }
-
-    throw err;
+    console.log(err);
+    return null;
   }
 
   return id;
@@ -104,10 +101,7 @@ export async function updateUser({
   data,
   equalTo,
 }: UpdateUser): Promise<boolean> {
-  const { rowCount } = await db
-    .update(UsersTable)
-    .set(data)
-    .where(equalTo);
+  const { rowCount } = await db.update(UsersTable).set(data).where(equalTo);
 
   if (!rowCount)
     // 0 or null
@@ -116,13 +110,17 @@ export async function updateUser({
   return true;
 }
 
-export async function addDish({ title, user_id, price, ingredients }: DishData): Promise<null | number> {
+export async function addDish({
+  title,
+  user_id,
+  price,
+  ingredients,
+}: DishData): Promise<null | number> {
   const dish: typeof DishesTable.$inferInsert = {
     title,
     user_id,
     price,
   };
-
 
   try {
     let result = await db
@@ -132,17 +130,15 @@ export async function addDish({ title, user_id, price, ingredients }: DishData):
     const id = result.length ? result[0].id : null;
 
     if (id == null) {
-      return null
+      return null;
     }
 
-
     ingredients = ingredients.map((value) => {
-      value["user_id"] = user_id
-      value["dish_id"] = id
+      value["user_id"] = user_id;
+      value["dish_id"] = id;
 
-      return value
-    })
-
+      return value;
+    });
 
     result = await db
       .insert(IngredientsTable)
@@ -150,18 +146,18 @@ export async function addDish({ title, user_id, price, ingredients }: DishData):
       .returning({ id: IngredientsTable.id });
 
     if (!result.length) {
-      return null
+      return null;
     }
 
-    return id
+    return id;
   } catch (err: any) {
-    console.log(err)
-    return null
+    console.log(err);
+    return null;
   }
 }
 
 export async function getUserDishes(user_id: number): Promise<Dish[]> {
-    const dishes = await db
+  const dishes = await db
     .select({
       id: DishesTable.id,
       user_id: DishesTable.user_id,
@@ -171,10 +167,13 @@ export async function getUserDishes(user_id: number): Promise<Dish[]> {
     .from(DishesTable)
     .where(eq(DishesTable.user_id, user_id));
 
-    return dishes 
+  return dishes;
 }
 
-export async function updateUserName({ user_id, name }: UpdateUserName) {
+export async function updateUserName({
+  user_id,
+  name,
+}: UpdateUserName): Promise<boolean> {
   const data = { name };
   const equalTo = eq(UsersTable.id, user_id);
   return updateUser({
@@ -183,16 +182,15 @@ export async function updateUserName({ user_id, name }: UpdateUserName) {
   });
 }
 
-export async function updateDishName({ user_id, dish_id, title }: UpdateDishName) {
+export async function updateDishName({
+  user_id,
+  dish_id,
+  title,
+}: UpdateDishName): Promise<boolean> {
   const { rowCount } = await db
-  .update(DishesTable)
-  .set({ title })
-  .where(
-    and(
-      eq(DishesTable.user_id, user_id),
-      eq(DishesTable.id, dish_id),
-    )
-  )
+    .update(DishesTable)
+    .set({ title })
+    .where(and(eq(DishesTable.user_id, user_id), eq(DishesTable.id, dish_id)));
 
   if (!rowCount)
     // 0 or null
@@ -201,15 +199,13 @@ export async function updateDishName({ user_id, dish_id, title }: UpdateDishName
   return true;
 }
 
-export async function deleteDish({ user_id, dish_id }: DeleteDish) {
+export async function deleteDish({
+  user_id,
+  dish_id,
+}: DeleteDish): Promise<boolean> {
   const { rowCount } = await db
-  .delete(DishesTable)
-  .where(
-    and(
-      eq(DishesTable.user_id, user_id),
-      eq(DishesTable.id, dish_id),
-    )
-  )
+    .delete(DishesTable)
+    .where(and(eq(DishesTable.user_id, user_id), eq(DishesTable.id, dish_id)));
 
   if (!rowCount)
     // 0 or null
@@ -218,14 +214,46 @@ export async function deleteDish({ user_id, dish_id }: DeleteDish) {
   return true;
 }
 
-export function addIngredient({ user_id, dish_id, name }: AddIngredient) {
-  throw new Error("Function not implemented.");
+export async function addIngredient({
+  user_id,
+  dish_id,
+  quantity,
+  name,
+}: AddIngredient): Promise<boolean> {
+  const ingredient = {
+    user_id,
+    dish_id,
+    quantity,
+    name,
+  };
+
+  try {
+    await db.insert(IngredientsTable).values(ingredient);
+    return true;
+  } catch (err: any) {
+    console.error(err);
+    return false;
+  }
 }
 
-export function removeIngredient({
+export async function removeIngredient({
   user_id,
   dish_id,
   ing_id,
-}: RemoveIngredient) {
-  throw new Error("Function not implemented.");
+}: RemoveIngredient): Promise<boolean> {
+  const { rowCount } = await db
+    .delete(IngredientsTable)
+    .where(
+      and(
+        eq(IngredientsTable.user_id, user_id),
+        eq(IngredientsTable.dish_id, dish_id),
+        eq(IngredientsTable.id, ing_id),
+      ),
+    );
+
+  if (!rowCount)
+    // 0 or null
+    return false;
+
+  return true;
 }

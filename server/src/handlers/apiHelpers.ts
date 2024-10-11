@@ -29,7 +29,10 @@ export function isAddDishRequestValid({
 
   if (!ingredients) {
     // undefined or is empty
-    return [false, "no ingredients data, should have at least one ingredient item"];
+    return [
+      false,
+      "no ingredients data, should have at least one ingredient item",
+    ];
   }
 
   return [true, null];

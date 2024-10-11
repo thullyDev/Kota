@@ -20,8 +20,8 @@ export type Dish = {
   user_id: number;
   title: string;
   price: number;
-  id: number
-}
+  id: number;
+};
 
 export type Ingredients = {
   name: string;
@@ -55,6 +55,7 @@ export type AddIngredientBody = {
   user_id?: number;
   dish_id?: number;
   name?: string;
+  quantity?: number;
 };
 
 export type RemoveIngredientBody = {
