@@ -1,6 +1,10 @@
 import { Hono, type Context } from "hono";
 import { createUser, getUser } from "../handlers/databaseService";
-import { crashResponse, successfulResponse } from "../handlers/response";
+import {
+  crashResponse,
+  forbiddenResponse,
+  successfulResponse,
+} from "../handlers/response";
 import {
   createProfileAvatar,
   encrypt,
@@ -8,6 +12,7 @@ import {
 } from "../utilities/misc";
 import type { User } from "../types/databaseServiceTypes";
 import { isValidLogin, isValidSignup } from "../handlers/authHelpers";
+import type { CxtAndMsg } from "../types/apiTypes";
 
 const auth = new Hono();
 
@@ -15,10 +20,10 @@ auth.post("/login", async (c: Context) => {
   const data = await c.req.json();
   const { email, password } = data;
   const user = await getUser({ email });
-  const [isValid, response] = isValidLogin({ user, password, c });
+  const [isValid, message] = isValidLogin({ user, password });
 
   if (isValid == false) {
-    return response as Response;
+    return forbiddenResponse({ c, message } as CxtAndMsg);
   }
 
   const { id, name, profile_image_url } = user as User;
@@ -41,12 +46,12 @@ auth.post("/signup", async (c: Context) => {
   const data = await c.req.json();
   const { email, name, password, confirm } = data;
   const user = await getUser({ email });
-  const [isValid, response] = isValidSignup({ user, password, confirm, c });
+  const [isValid, message] = isValidSignup({ user, password, confirm });
 
   if (isValid == false) {
-    return response as Response;
+    return forbiddenResponse({ c, message } as CxtAndMsg);
   }
-
+  
   const sessionToken = generateUniqueToken();
   const encryptedSessionToken = encrypt(sessionToken);
   const encryptedPassword = encrypt(password);
@@ -59,7 +64,7 @@ auth.post("/signup", async (c: Context) => {
     profileImageUrl,
   });
 
-  if  (userId == null) {
+  if (userId == null) {
     return crashResponse({
       c,
       message: "something went with database trying to create user",

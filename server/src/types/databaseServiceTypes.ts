@@ -31,3 +31,9 @@ export type UpdateUser = {
   data: Record<string, any>;
   equalTo: SQL<unknown>;
 };
+
+
+export type UpdateUserName = {
+  name: string,
+  user_id: number,
+}

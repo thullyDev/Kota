@@ -10,6 +10,7 @@ import { Pool } from "pg";
 import * as schema from "../database/drizzle/schema";
 import "dotenv/config";
 import { eq } from "drizzle-orm";
+import type { DishData } from "../types/apiTypes";
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL as string,
@@ -62,11 +63,14 @@ export async function createUser({
     encrypted_password: encryptedPassword,
     session_token: sessionToken,
   };
-  let id = null
+  let id = null;
 
   try {
-    const result = await db.insert(schema.UsersTable).values(user).returning({id: schema.UsersTable.id});
-    id = result.length ? result[0].id : null
+    const result = await db
+      .insert(schema.UsersTable)
+      .values(user)
+      .returning({ id: schema.UsersTable.id });
+    id = result.length ? result[0].id : null;
   } catch (err: any) {
     if (err.code === "23505") {
       return null;
@@ -75,7 +79,7 @@ export async function createUser({
     throw err;
   }
 
-  return id
+  return id;
 }
 
 export async function updateSessionToken({
@@ -104,4 +108,17 @@ export async function updateUser({
     return false;
 
   return true;
+}
+
+export async function addDish(dishData: DishData): Promise<null | number> {
+  // return the dish_id or null if failed
+  throw new Error("Function not implemented.");
+}
+
+export function getUserDishes(user_id: number) {
+  throw new Error("Function not implemented.");
+}
+
+export function updateUserName({ user_name, name }: UpdateUserName) {
+  throw new Error("Function not implemented.");
 }
