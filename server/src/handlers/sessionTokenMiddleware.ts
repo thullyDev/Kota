@@ -67,11 +67,10 @@ async function isSessionTokenValid({
   const { session_token } = user;
   const sessionToken = decrypt(encryptedSessionToken);
 
-  console.log({ sessionToken, old: session_token })
-
   if (session_token != sessionToken) {
     return [false, badRequestResponse({ c, message: "invalid session_token" })];
   }
 
   return [true, null];
 }
+

@@ -57,7 +57,7 @@ api.post("/add_dish", async (c) => {
   const dishId = await addDish(dishData);
 
   if (dishId == null) {
-    return crashResponse({ c, message: "database failed to add dish " });
+    return notFoundResponse({ c, message: "database failed to add dish, user_id does not found" });
   }
 
   return successfulResponse({
@@ -100,10 +100,10 @@ api.put("/change_user_name", async (c) => {
   const response = await updateUserName({ user_id, name } as UpdateUserName);
 
   if (response == false) {
-    return crashResponse({
+    return notFoundResponse({
       c,
       message:
-        "db failed to change user name, probably because user does not exist",
+        "db failed to change user name, probably because user_id not found",
     });
   }
 
@@ -129,7 +129,7 @@ api.put("/change_dish_title", async (c) => {
   } as UpdateDishName);
 
   if (!response) {
-    return crashResponse({ c, message: "unable to update dish title" });
+    return notFoundResponse({ c, message: "unable to update dish title, user_id or dish_id not found" });
   }
 
   return successfulResponse({
@@ -150,7 +150,7 @@ api.delete("/delete_dish", async (c) => {
   const response = await deleteDish({ user_id, dish_id } as DeleteDish);
 
   if (!response) {
-    return crashResponse({ c, message: "unable to delete dish" });
+    return notFoundResponse({ c, message: "unable to delete disht, user_id or dish_id not found" });
   }
 
   return successfulResponse({
@@ -176,7 +176,7 @@ api.put("/add_ingredient", async (c) => {
   } as AddIngredient);
 
   if (!response) {
-    return crashResponse({ c, message: "unable to add ingredient, " });
+    return notFoundResponse({ c, message: "unable to add ingredient, user_id or dish_id not found" });
   }
 
   return successfulResponse({
@@ -204,7 +204,7 @@ api.delete("/remove_ingredient", async (c) => {
     return notFoundResponse({
       c,
       message:
-        "unable to remove ingredient, could be user_id, dish_id or ing_id are not found",
+        "unable to remove ingredient, could be user_id, dish_id or ing_id not found",
     });
   }
 
