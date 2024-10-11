@@ -174,8 +174,13 @@ export async function getUserDishes(user_id: number): Promise<Dish[]> {
     return dishes 
 }
 
-export function updateUserName({ user_id, name }: UpdateUserName) {
-  throw new Error("Function not implemented.");
+export async function updateUserName({ user_id, name }: UpdateUserName) {
+  const data = { name };
+  const equalTo = eq(UsersTable.id, user_id);
+  return updateUser({
+    data,
+    equalTo,
+  });
 }
 
 export function updateDishName({ user_id, title }: UpdateDishName) {

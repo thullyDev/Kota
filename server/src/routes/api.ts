@@ -94,7 +94,7 @@ api.put("/change_user_name", async (c) => {
   const response = await updateUserName({ user_id, name } as UpdateUserName); // Todo: implement this later
 
   if (response == false) {
-    return crashResponse({ c, message: "db failed to change user name" });
+    return crashResponse({ c, message: "db failed to change user name, probably because user does not exist" });
   }
 
   return successfulResponse({
