@@ -6,7 +6,7 @@ import { RouterLink, RouterView } from 'vue-router'
   <div class="content bg-neutral-900 text-white min-h-screen py-5">
     <header>
       <div class="wrapper">
-        <nav class="flex justify-center gap-5 font-bold text-yellow-400">
+        <nav class="flex justify-center gap-5 font-bold text-yellow-400 sm:text-2xl">
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/dishes">Dishes</RouterLink>
         </nav>
