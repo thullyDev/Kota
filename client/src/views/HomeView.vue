@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import TheWelcome from '../components/TheWelcome.vue'
+import LandingBg from '../components/LandingBg.vue'
+import AuthCom from '../components/AuthCom.vue'
 </script>
 
 <template>
   <main>
-    <TheWelcome />
+    <LandingBg />
+    <AuthCom />
   </main>
 </template>

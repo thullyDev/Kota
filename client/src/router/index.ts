@@ -2,8 +2,9 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DishesView from '../views/DishesView.vue'
 import DishView from '../views/DishView.vue'
-import SignupView from '../views/SignupView.vue'
-import loginView from '../views/loginView.vue'
+// import SignupView from '../views/SignupView.vue'
+// import loginView from '../views/loginView.vue'
+import profileView from '../views/profileView.vue'
 import NotFound from '../views/NotFound.vue'
 
 const router = createRouter({
@@ -24,16 +25,21 @@ const router = createRouter({
       name: 'dish',
       component: DishView
     },
-    {
-      path: '/signup',
-      name: 'signup',
-      component: SignupView
-    },
-    {
-      path: '/login',
-      name: 'login',
-      component: loginView
-    },
+    // {
+    //   path: '/signup',
+    //   name: 'signup',
+    //   component: SignupView
+    // },
+    // {
+    //   path: '/login',
+    //   name: 'login',
+    //   component: loginView
+    // },
+    // {
+    //   path: '/profile',
+    //   name: 'profile',
+    //   component: profileView
+    // },
   {
     path: '/:catchAll(.*)',
     name: 'NotFound',
