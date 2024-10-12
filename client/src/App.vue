@@ -9,6 +9,7 @@ import { RouterLink, RouterView } from 'vue-router'
         <nav class="flex justify-center gap-5 font-bold text-yellow-400 sm:text-2xl">
           <RouterLink to="/">Home</RouterLink>
           <RouterLink to="/dishes">Dishes</RouterLink>
+          <RouterLink to="/add">Add</RouterLink>
         </nav>
       </div>
     </header>

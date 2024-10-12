@@ -25,6 +25,11 @@ const router = createRouter({
       name: 'dish',
       component: DishView
     },
+    {
+      path: '/add',
+      name: 'add',
+      component: DishView
+    },
     // {
     //   path: '/signup',
     //   name: 'signup',
