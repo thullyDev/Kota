@@ -2,7 +2,6 @@ import CryptoJS from "crypto-js";
 import slugify from "slugify";
 import { SECRET_KEY } from "./config";
 
-// TODO implement encrypt, decrypt, and generateToken
 export function decrypt(encryptedText: string): string | null {
   try {
     const bytes = CryptoJS.AES.decrypt(encryptedText, SECRET_KEY);
