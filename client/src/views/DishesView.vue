@@ -5,9 +5,13 @@
 </script>
 
 <template>
-  <main>
-    <ProfileCom />
-    <UserDishes />
-    <Pagination />
+  <main class="lg:flex items-center justify-center">
+    <div class="left-side w-full lg:max-w-60">
+      <ProfileCom />
+    </div>
+    <div class="right-side ">
+      <UserDishes />
+      <Pagination />
+    </div>
   </main>
 </template>
