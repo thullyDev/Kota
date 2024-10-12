@@ -4,8 +4,8 @@
 </script>
 
 <template>
-  <div class="auth-con">
-  	<div class="inner-con">
+  <div class="auth-con flex justify-center w-full">
+  	<div class="inner-con flex flex-col px-3 w-full max-w-96">
   		<Login />
   		<Signup />
   	</div>

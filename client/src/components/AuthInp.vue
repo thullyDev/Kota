@@ -3,13 +3,13 @@
 </script>
 
 <template>
-  <div class="auth-inp-con">
-    <Icon :name="icon" />
+  <div class="auth-inp-con border border-neutral-400 flex flex-nowrap gap-3 py-1 px-2 bg-neutral-700 rounded-sm">
+    <Icon :name="icon + ' text-neutral-400 text-sm' " />
     <input
       :type="type"
       :name="name"
       :placeholder="name"
-      class="auth-inp"
+      class="auth-inp bg-inherit w-full text-white text-xs border-none outline-none placeholder:text-neutral-400"
     />
   </div>
 </template>
