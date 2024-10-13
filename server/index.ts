@@ -3,7 +3,7 @@ import apiRouter from "./src/routes/api";
 import authRouter from "./src/routes/auth";
 import { logger } from "hono/logger";
 import { cors } from "hono/cors";
-import { FRONTEND_ORIGIN, PORT } from "./utilities/config"
+import { FRONTEND_ORIGIN, PORT } from "./src/utilities/config"
 
 const app = new Hono();
 app.use(logger());
