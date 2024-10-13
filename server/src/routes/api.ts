@@ -45,6 +45,16 @@ import type {
 const api = new Hono();
 api.use(sessionTokenValidator);
 
+api.post("/is_auth", async (c) => {
+  return successfulResponse({
+    c,
+    message: "user is authenticated",
+    data: {
+      authenticated: true,
+    },
+  });
+});
+
 api.post("/add_dish", async (c) => {
   const data: AddDishBody = await c.req.json();
   const { user_id, title, price, ingredients } = data;

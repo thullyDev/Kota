@@ -28,22 +28,6 @@ const createContext = (
   statusCode: number,
   message: string,
 ): Data => {
-  const url = c.req.url.toString();
-
-  if (url.includes("/api/") && statusCode == SUCCESSFUL) {
-    // checks if the request is for the api router,
-    // and if so we send back a new encrypted session_token to the request,
-    // only if the statusCode is 200
-
-    const encryptedSessionToken = c.get("encryptedSessionToken");
-
-    if (!encryptedSessionToken) {
-      throw new Error("no encryptedSessionToken found");
-    }
-
-    data["session_token"] = encryptedSessionToken;
-  }
-
   return {
     message,
     status_code: statusCode,

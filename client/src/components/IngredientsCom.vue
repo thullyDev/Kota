@@ -31,9 +31,9 @@
                 </span>
             </span>
             <ul class="ing-list flex flex-wrap gap-2 justify-center">
-                <li class="ing-card w-full max-w-64" v-for="i in 10" :key="i">
+      <!--           <li class="ing-card w-full max-w-64" v-for="i in 10" :key="i">
                     <IngredientCard />
-                </li>
+                </li> -->
             </ul>
         </div>
     </div>

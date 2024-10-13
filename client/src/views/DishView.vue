@@ -9,7 +9,7 @@
     <div class="inner-con mt-5 px-2">
       <form action="POST" class="flex flex-col gap-5">
         <div class="top-inputs flex flex-col gap-5 items-center">
-          <DishInp name="name" icon="fa fa-pencil" />
+          <DishInp name="title" icon="fa fa-pencil" />
           <DishInp name="price" icon="fa-solid fa-money-bill"/>
         </div>
         <IngredientsCom />

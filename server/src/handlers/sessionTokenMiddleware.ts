@@ -6,15 +6,16 @@ import {
   crashResponse,
   forbiddenResponse,
 } from "./response";
-import { decrypt, encrypt, generateUniqueToken } from "../utilities/misc";
+import { generateUniqueToken } from "../utilities/misc";
 import type { UpdateSessionToken } from "../types/databaseServiceTypes";
+import { getCookie, setCookie } from "hono/cookie";
 
 export const sessionTokenValidator = async (c: Context, next: Next) => {
-  const session_token = c.req.header("session_token");
+  const oldSessionToken = getCookie(c, "session_token");
   const email = c.req.header("email");
   const [isValidSessionToken, response] = await isSessionTokenValid({
     email,
-    encryptedSessionToken: session_token,
+    oldSessionToken,
     c,
   });
 
@@ -23,14 +24,13 @@ export const sessionTokenValidator = async (c: Context, next: Next) => {
   }
 
   const sessionToken = generateUniqueToken();
-  const encryptedSessionToken = encrypt(sessionToken);
-  c.set("encryptedSessionToken", encryptedSessionToken);
-
   const dbResponse = await updateSessionToken({
     sessionToken,
     email,
   } as UpdateSessionToken);
 
+  setSessionTokenCookie(c, sessionToken)
+  
   if (dbResponse == false) {
     // the database couldnt update
     return crashResponse({
@@ -45,13 +45,13 @@ export const sessionTokenValidator = async (c: Context, next: Next) => {
 
 async function isSessionTokenValid({
   email,
-  encryptedSessionToken,
+  oldSessionToken,
   c,
 }: IsSessionTokenValid) {
-  if (!email || !encryptedSessionToken) {
+  if (!email || !oldSessionToken) {
     return [
       false,
-      badRequestResponse({ c, message: "invalid sessionToken or email" }),
+      badRequestResponse({ c, message: "invalid oldSessionToken or email" }),
     ];
   }
 
@@ -65,12 +65,19 @@ async function isSessionTokenValid({
   }
 
   const { session_token } = user;
-  const sessionToken = decrypt(encryptedSessionToken);
 
-  if (session_token != sessionToken) {
+  if (session_token != oldSessionToken) {
     return [false, badRequestResponse({ c, message: "invalid session_token" })];
   }
 
   return [true, null];
 }
-
+function setSessionTokenCookie(c: Context, sessionToken: string) {
+    const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
+   setCookie(c, "session_token", sessionToken, {
+    httpOnly: true,
+    secure: true,
+    expires, 
+    path: '/', 
+  });
+}
