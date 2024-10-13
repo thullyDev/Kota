@@ -24,6 +24,7 @@ npm install -g bun
     DATABASE_URL=postgres://{user}:{password}@127.0.0.1:5432/{dbname}
     SECRET_KEY=1234567890
     FRONTEND_ORIGIN=http://localhost:5173
+    PORT=3000
     ```
 
 3. **Install dependencies** in the `base_dir`:
