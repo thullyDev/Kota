@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "format": "npx prettier --write .",
+    "install": "npm install && npm install --prefix server && npm install --prefix client",
     "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
     "db:generate": "npm run db:generate --prefix server",
     "db:migrate": "npm run db:migrate --prefix server",
