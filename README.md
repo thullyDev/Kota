@@ -29,7 +29,7 @@ npm install -g bun
 
 3. **Install dependencies** in the `base_dir`:
     ```bash
-    npm run install
+    npm install
     ```
     This will install all packages needed in the base_dir, server, and client
 
